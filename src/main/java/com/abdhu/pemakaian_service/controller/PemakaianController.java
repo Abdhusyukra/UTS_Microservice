@@ -21,8 +21,8 @@ public class PemakaianController {
     }
 
     @GetMapping("/{kdTransaksi}")
-    public ResponseEntity<Pemakaian> getPemakaianById(@PathVariable String kdTransaksi) {
-        return pemakaianService.getPemakaianById(kdTransaksi)
+    public ResponseEntity<Pemakaian> getPemakaianById(@PathVariable Long id) {
+        return pemakaianService.getPemakaianById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -33,9 +33,9 @@ public class PemakaianController {
     }
 
     @PutMapping("/{kdTransaksi}")
-    public ResponseEntity<Pemakaian> updatePemakaian(@PathVariable String kdTransaksi, @RequestBody Pemakaian pemakaianDetails) {
+    public ResponseEntity<Pemakaian> updatePemakaian(@PathVariable Long id, @RequestBody Pemakaian pemakaianDetails) {
         try {
-            Pemakaian updatedPemakaian = pemakaianService.updatePemakaian(kdTransaksi, pemakaianDetails);
+            Pemakaian updatedPemakaian = pemakaianService.updatePemakaian(id, pemakaianDetails);
             return ResponseEntity.ok(updatedPemakaian);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -43,9 +43,9 @@ public class PemakaianController {
     }
 
     @DeleteMapping("/{kdTransaksi}")
-    public ResponseEntity<Void> deletePemakaian(@PathVariable String kdTransaksi) {
+    public ResponseEntity<Void> deletePemakaian(@PathVariable Long id) {
         try {
-            pemakaianService.deletePemakaian(kdTransaksi);
+            pemakaianService.deletePemakaian(id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();

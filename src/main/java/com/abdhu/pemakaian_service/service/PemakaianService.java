@@ -18,24 +18,32 @@ public class PemakaianService {
         return pemakaianRepository.findAll();
     }
 
-    public Optional<Pemakaian> getPemakaianById(String kdTransaksi) {
-        return pemakaianRepository.findById(kdTransaksi);
+    public Optional<Pemakaian> getPemakaianById(Long id) {
+        return pemakaianRepository.findById(id);
     }
 
     public Pemakaian savePemakaian(Pemakaian pemakaian) {
-        
+        // Pastikan id tidak diisi dari client
+        pemakaian.setId(null);
+        // Hitung pemakaian dan total sebelum simpan
+        if (pemakaian.getMeterBulanIni() != null && pemakaian.getMeterBulanLalu() != null) {
+            pemakaian.calculatePemakaian();
+        }
+        if (pemakaian.getPemakaian() != null && pemakaian.getTarifPermeter() != null) {
+            pemakaian.calculateTotal();
+        }
         return pemakaianRepository.save(pemakaian);
     }
 
-    public void deletePemakaian(String kdTransaksi) {
-        pemakaianRepository.deleteById(kdTransaksi);
+    public void deletePemakaian(Long id) {
+        pemakaianRepository.deleteById(id);
     }
 
-    public Pemakaian updatePemakaian(String kdTransaksi, Pemakaian pemakaianDetails) {
-        Pemakaian pemakaian = pemakaianRepository.findById(kdTransaksi)
-                .orElseThrow(() -> new RuntimeException("Pemakaian tidak ditemukan: " + kdTransaksi));
+    public Pemakaian updatePemakaian(Long id, Pemakaian pemakaianDetails) {
+        Pemakaian pemakaian = pemakaianRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pemakaian tidak ditemukan: " + id));
 
-        pemakaian.setKdTransaksi(kdTransaksi);
+        // pemakaian.setKdTransaksi(kdTransaksi);
         pemakaian.setPelanggan(pemakaianDetails.getPelanggan());
         pemakaian.setMeterBulanIni(pemakaianDetails.getMeterBulanIni());
         pemakaian.setMeterBulanLalu(pemakaianDetails.getMeterBulanLalu());
